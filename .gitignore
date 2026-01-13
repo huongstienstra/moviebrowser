@@ -1,0 +1,25 @@
+*.iml
+.gradle/
+.idea/
+.DS_Store
+
+# Build outputs
+build/
+*/build/
+
+# Local configuration
+local.properties
+
+# Captures
+/captures
+
+# Native
+.externalNativeBuild/
+.cxx/
+
+# Keystore
+*.jks
+*.keystore
+
+# Logs
+*.log
