@@ -610,4 +610,4 @@ app/src/main/java/com/vyvienne/moviebrowser/
 
 ## Author
 
-Built by [vyvienne](https://github.com/vyvienne)
+Built by [vyvienne](https://github.com/huongstienstra)
