@@ -1,12 +1,47 @@
-# Movie Browser - Clean Architecture Guide
+# Movie Browser
 
-A modern Android application demonstrating **Clean Architecture** principles. This README serves as a learning guide for understanding Clean Architecture concepts.
+A production-ready Android application for browsing movies and TV shows from TMDB. Built with **Clean Architecture**, **Jetpack Compose**, and **Kotlin Coroutines** to demonstrate scalable patterns I'd use in a professional codebase.
+
+## Features
+- Browse trending and popular movies/TV shows
+- Search movies and TV shows with debounced queries
+- View detailed information (runtime, genres, ratings, status)
+- Save favorites locally with Room database
+- Material 3 design with responsive UI
+
+---
+
+## Decisions & Tradeoffs
+
+### Why Clean Architecture?
+- **Testability**: Business logic in the domain layer can be unit tested without Android dependencies
+- **Scalability**: Adding features (e.g., watchlists, recommendations) means adding use cases—not modifying existing code
+- **Team-readiness**: Clear boundaries make it easier for multiple developers to work on different layers
+
+### Key Technical Decisions
+
+| Decision | Why | Tradeoff |
+|----------|-----|----------|
+| **Single `MovieRepository` interface** | Movies and TV shows share similar operations, reducing interface sprawl | Less type safety; could split into `MovieRepository`/`TvShowRepository` if domain diverges |
+| **`Result<T>` over sealed class for errors** | Kotlin's built-in `Result` is lightweight and chainable with `onSuccess`/`onFailure` | Less granular error types; would add sealed class if I needed distinct error handling per type |
+| **`Flow<Boolean>` for favorite status** | Real-time UI updates when favorite state changes | Slightly more complex than one-shot queries; worth it for reactive UX |
+| **Unified `ToggleFavoriteUseCase`** | Groups related operations (add/remove/check) vs 3 separate use cases | Deviates from strict "one use case = one action"; pragmatic for cohesion |
+| **Room for favorites only** | Favorites need persistence; movie lists are fresh from API | No offline support for movie lists; would add caching layer for offline-first |
+
+### What I Struggled With
+- **Error propagation across layers**: Decided on `Result<T>` at repository boundary, letting ViewModels handle UI-specific messaging
+- **Balancing use case granularity**: Started with one use case per action, consolidated `ToggleFavorite` when it felt over-engineered
+
+### What I'd Improve Next
+- Add offline caching with cache invalidation strategy
+- Implement pagination with Paging 3 library
+- Increase test coverage (unit + integration tests)
+- Add CI/CD pipeline with GitHub Actions
 
 ---
 
 ## Table of Contents
-- [What is Clean Architecture?](#what-is-clean-architecture)
-- [Why Use Clean Architecture?](#why-use-clean-architecture)
+- [Architecture Overview](#architecture-overview)
 - [The Dependency Rule](#the-dependency-rule)
 - [The Three Layers](#the-three-layers)
 - [Data Flow](#data-flow)
@@ -17,7 +52,7 @@ A modern Android application demonstrating **Clean Architecture** principles. Th
 
 ---
 
-## What is Clean Architecture?
+## Architecture Overview
 
 Clean Architecture is a software design philosophy introduced by **Robert C. Martin (Uncle Bob)** in 2012. It separates code into layers with clear responsibilities, making the codebase:
 
